@@ -7,12 +7,7 @@ import {
   useSensor,
   useSensors,
 } from '@dnd-kit/core';
-import {
-  SortableContext,
-  sortableKeyboardCoordinates,
-  useSortable,
-  verticalListSortingStrategy,
-} from '@dnd-kit/sortable';
+import { sortableKeyboardCoordinates, useSortable } from '@dnd-kit/sortable';
 import { CSS } from '@dnd-kit/utilities';
 import { useState } from 'react';
 
@@ -49,7 +44,8 @@ export default function Page() {
   const [selectedBlock, setSelectedBlock] = useState('');
   const [newValue, setNewValue] = useState('');
   const [activeTab, setActiveTab] = useState('table');
-  const [caseItems, setCaseItems] = useState([]);
+  const [testCases, setTestCases] = useState([]);
+  const [currentTestCase, setCurrentTestCase] = useState({ name: '', items: [] });
 
   const sensors = useSensors(
     useSensor(PointerSensor),
@@ -102,26 +98,33 @@ export default function Page() {
     setBlocks(newBlocks);
   };
 
-  const handleDragEnd = (event) => {
-    const { active, over } = event;
+  const addItemToCurrentTestCase = (item) => {
+    setCurrentTestCase({
+      ...currentTestCase,
+      items: [...currentTestCase.items, item],
+    });
+  };
 
-    if (active.id !== over.id) {
-      const activeBlock = Object.keys(blocks).find((blockName) =>
-        blocks[blockName].includes(active.id),
-      );
+  const removeItemFromCurrentTestCase = (index) => {
+    const newItems = [...currentTestCase.items];
+    newItems.splice(index, 1);
+    setCurrentTestCase({
+      ...currentTestCase,
+      items: newItems,
+    });
+  };
 
-      if (activeBlock && over.id === 'case') {
-        setCaseItems((prevItems) => [...prevItems, active.id]);
-        setBlocks((prevBlocks) => ({
-          ...prevBlocks,
-          [activeBlock]: prevBlocks[activeBlock].filter((item) => item !== active.id),
-        }));
-      }
+  const saveCurrentTestCase = () => {
+    if (currentTestCase.name && currentTestCase.items.length > 0) {
+      setTestCases([...testCases, currentTestCase]);
+      setCurrentTestCase({ name: '', items: [] });
+    } else {
+      alert('Please provide a name and add at least one item to the test case.');
     }
   };
 
   return (
-    <DndContext sensors={sensors} collisionDetection={closestCenter} onDragEnd={handleDragEnd}>
+    <DndContext sensors={sensors} collisionDetection={closestCenter}>
       <main className='flex min-h-screen flex-col items-center justify-between p-24'>
         <div className='z-10 w-full max-w-7xl items-center justify-between font-mono text-sm'>
           <div className='flex items-center justify-between mb-4'>
@@ -248,30 +251,74 @@ export default function Page() {
                 {Object.entries(blocks).map(([blockName, items]) => (
                   <div key={blockName}>
                     <h3 className='font-bold'>{blockName}</h3>
-                    <SortableContext items={items} strategy={verticalListSortingStrategy}>
-                      <ul className='min-h-[50px] border p-2'>
-                        {items.map((item) => (
-                          <SortableItem key={item} id={item}>
-                            {item}
-                          </SortableItem>
-                        ))}
-                      </ul>
-                    </SortableContext>
+                    <ul className='min-h-[50px] border p-2'>
+                      {items.map((item) => (
+                        <li
+                          key={item}
+                          className='flex items-center justify-between p-2 mb-2 bg-gray-100'
+                        >
+                          {item}
+                          <button
+                            onClick={() => addItemToCurrentTestCase(item)}
+                            className='bg-blue-500 text-white px-2 py-1 rounded'
+                          >
+                            +
+                          </button>
+                        </li>
+                      ))}
+                    </ul>
                   </div>
                 ))}
               </div>
               <div className='w-1/2 pl-4'>
-                <h2 className='text-xl font-bold mb-4'>Case Items</h2>
-                <SortableContext items={caseItems} strategy={verticalListSortingStrategy}>
-                  <ul className='min-h-[200px] border p-2'>
-                    {caseItems.map((item) => (
-                      <SortableItem key={item} id={item}>
-                        {item}
-                      </SortableItem>
+                <h2 className='text-xl font-bold mb-4'>Current Test Case</h2>
+                <input
+                  type='text'
+                  value={currentTestCase.name}
+                  onChange={(e) => setCurrentTestCase({ ...currentTestCase, name: e.target.value })}
+                  placeholder='Test Case Name'
+                  className='border p-2 mb-4 w-full'
+                />
+                <ul className='min-h-[200px] border p-2'>
+                  {currentTestCase.items.map((item, index) => (
+                    <li
+                      key={index}
+                      className='flex items-center justify-between p-2 mb-2 bg-gray-100'
+                    >
+                      {item}
+                      <button
+                        onClick={() => removeItemFromCurrentTestCase(index)}
+                        className='bg-red-500 text-white px-2 py-1 rounded'
+                      >
+                        -
+                      </button>
+                    </li>
+                  ))}
+                </ul>
+                <button
+                  onClick={saveCurrentTestCase}
+                  className='bg-green-500 text-white px-4 py-2 rounded mt-4'
+                >
+                  Save Test Case
+                </button>
+              </div>
+            </div>
+          )}
+
+          {/* Saved Test Cases */}
+          {activeTab === 'createCase' && (
+            <div className='mt-8'>
+              <h2 className='text-xl font-bold mb-4'>Saved Test Cases</h2>
+              {testCases.map((testCase, index) => (
+                <div key={index} className='border p-4 mb-4'>
+                  <h3 className='font-bold'>{testCase.name}</h3>
+                  <ul>
+                    {testCase.items.map((item, itemIndex) => (
+                      <li key={itemIndex}>{item}</li>
                     ))}
                   </ul>
-                </SortableContext>
-              </div>
+                </div>
+              ))}
             </div>
           )}
         </div>
