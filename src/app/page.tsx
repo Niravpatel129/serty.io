@@ -3,12 +3,12 @@ import { MdOutlineMoreVert } from 'react-icons/md';
 export default function Home() {
   const renderTableRow = () => {
     return (
-      <div className='flex justify-between items-center bg-[#f1f1f1] p-2 text-[#000] mt-2'>
-        <div>Tooltip</div>
-        <div>Optimization</div>
-        <div>0/0</div>
-        <div className='cursor-pointer'>
-          <MdOutlineMoreVert className='text-2xl' />
+      <div className='grid grid-cols-4 gap-4 items-center bg-[#f1f1f1] p-2 text-[#000] mt-2'>
+        <div className='text-center'>Tooltip</div>
+        <div className='text-center'>Optimization</div>
+        <div className='text-center'>0/0</div>
+        <div className='flex justify-center items-center'>
+          <MdOutlineMoreVert className='text-2xl cursor-pointer' />
         </div>
       </div>
     );
@@ -27,11 +27,11 @@ export default function Home() {
         {/* Table */}
         <div className='flex flex-col'>
           {/* Table Heading */}
-          <div className='flex justify-between items-center bg-black p-2 text-[#f1f1f1] mt-2'>
-            <div>Feature</div>
-            <div>Team</div>
-            <div>Status</div>
-            <div>Actions</div>
+          <div className='grid grid-cols-4 gap-4 items-center bg-black p-2 text-[#f1f1f1] mt-2'>
+            <div className='text-center'>Feature</div>
+            <div className='text-center'>Team</div>
+            <div className='text-center'>Status</div>
+            <div className='text-center'>Actions</div>
           </div>
 
           {/* Table Rows */}
