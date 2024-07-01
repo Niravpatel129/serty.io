@@ -45,7 +45,7 @@ export default function Page() {
   const [newValue, setNewValue] = useState('');
   const [activeTab, setActiveTab] = useState('table');
   const [testCases, setTestCases] = useState([]);
-  const [currentTestCase, setCurrentTestCase] = useState({ name: '', items: [] });
+  const [currentTestCases, setCurrentTestCases] = useState({});
 
   const sensors = useSensors(
     useSensor(PointerSensor),
@@ -98,30 +98,66 @@ export default function Page() {
     setBlocks(newBlocks);
   };
 
-  const addItemToCurrentTestCase = (item) => {
-    setCurrentTestCase({
-      ...currentTestCase,
-      items: [...currentTestCase.items, item],
+  const addItemToCurrentTestCase = (item, blockName) => {
+    setCurrentTestCases((prev) => {
+      const updatedCases = { ...prev };
+      if (!updatedCases[blockName]) {
+        updatedCases[blockName] = [];
+      }
+      if (!updatedCases[blockName].includes(item)) {
+        updatedCases[blockName].push(item);
+      }
+      return updatedCases;
     });
   };
 
-  const removeItemFromCurrentTestCase = (index) => {
-    const newItems = [...currentTestCase.items];
-    newItems.splice(index, 1);
-    setCurrentTestCase({
-      ...currentTestCase,
-      items: newItems,
+  const removeItemFromCurrentTestCase = (blockName, index) => {
+    setCurrentTestCases((prev) => {
+      const updatedCases = { ...prev };
+      updatedCases[blockName].splice(index, 1);
+      if (updatedCases[blockName].length === 0) {
+        delete updatedCases[blockName];
+      }
+      return updatedCases;
     });
   };
 
-  const saveCurrentTestCase = () => {
-    if (currentTestCase.name && currentTestCase.items.length > 0) {
-      setTestCases([...testCases, currentTestCase]);
-      setCurrentTestCase({ name: '', items: [] });
-    } else {
-      alert('Please provide a name and add at least one item to the test case.');
+  const saveCurrentTestCases = () => {
+    const blocks = Object.keys(currentTestCases);
+
+    if (blocks.length === 0) {
+      alert('Please select at least one item');
+      return;
     }
+
+    const generateCombinations = (index, current) => {
+      if (index === blocks.length) {
+        return [current];
+      }
+
+      const blockName = blocks[index];
+      const items = currentTestCases[blockName];
+
+      return items.flatMap((item) =>
+        generateCombinations(index + 1, [...current, { blockName, item }]),
+      );
+    };
+
+    const combinations = generateCombinations(0, []);
+
+    const newTestCases = combinations.map((combination, index) => ({
+      name: `Test Case ${index + 1}`,
+      items: combination,
+    }));
+
+    setTestCases((prev) => [...prev, ...newTestCases]);
+    setCurrentTestCases({});
   };
+
+  const combinationCount = Object.values(currentTestCases).reduce(
+    (acc, items) => acc * items.length,
+    1,
+  );
 
   return (
     <DndContext sensors={sensors} collisionDetection={closestCenter}>
@@ -259,8 +295,13 @@ export default function Page() {
                         >
                           {item}
                           <button
-                            onClick={() => addItemToCurrentTestCase(item)}
-                            className='bg-blue-500 text-white px-2 py-1 rounded'
+                            onClick={() => addItemToCurrentTestCase(item, blockName)}
+                            className={`text-white px-2 py-1 rounded ${
+                              currentTestCases[blockName]?.includes(item)
+                                ? 'bg-gray-400 cursor-not-allowed'
+                                : 'bg-blue-500 hover:bg-blue-600'
+                            }`}
+                            disabled={currentTestCases[blockName]?.includes(item)}
                           >
                             +
                           </button>
@@ -271,35 +312,36 @@ export default function Page() {
                 ))}
               </div>
               <div className='w-1/2 pl-4'>
-                <h2 className='text-xl font-bold mb-4'>Current Test Case</h2>
-                <input
-                  type='text'
-                  value={currentTestCase.name}
-                  onChange={(e) => setCurrentTestCase({ ...currentTestCase, name: e.target.value })}
-                  placeholder='Test Case Name'
-                  className='border p-2 mb-4 w-full'
-                />
+                <h2 className='text-xl font-bold mb-4'>Current Test Cases</h2>
                 <ul className='min-h-[200px] border p-2'>
-                  {currentTestCase.items.map((item, index) => (
-                    <li
-                      key={index}
-                      className='flex items-center justify-between p-2 mb-2 bg-gray-100'
-                    >
-                      {item}
-                      <button
-                        onClick={() => removeItemFromCurrentTestCase(index)}
-                        className='bg-red-500 text-white px-2 py-1 rounded'
-                      >
-                        -
-                      </button>
+                  {Object.entries(currentTestCases).map(([blockName, items]) => (
+                    <li key={blockName} className='mb-4'>
+                      <h3 className='font-bold'>{blockName}</h3>
+                      <ul className='pl-4'>
+                        {items.map((item, index) => (
+                          <li
+                            key={index}
+                            className='flex items-center justify-between p-2 mb-2 bg-gray-100'
+                          >
+                            {item}
+                            <button
+                              onClick={() => removeItemFromCurrentTestCase(blockName, index)}
+                              className='bg-red-500 text-white px-2 py-1 rounded'
+                            >
+                              -
+                            </button>
+                          </li>
+                        ))}
+                      </ul>
                     </li>
                   ))}
                 </ul>
                 <button
-                  onClick={saveCurrentTestCase}
+                  onClick={saveCurrentTestCases}
                   className='bg-green-500 text-white px-4 py-2 rounded mt-4'
+                  disabled={combinationCount === 0}
                 >
-                  Save Test Case
+                  Create {combinationCount} Test Case{combinationCount !== 1 ? 's' : ''}
                 </button>
               </div>
             </div>
@@ -314,7 +356,9 @@ export default function Page() {
                   <h3 className='font-bold'>{testCase.name}</h3>
                   <ul>
                     {testCase.items.map((item, itemIndex) => (
-                      <li key={itemIndex}>{item}</li>
+                      <li key={itemIndex}>
+                        <strong>{item.blockName}:</strong> {item.item}
+                      </li>
                     ))}
                   </ul>
                 </div>
