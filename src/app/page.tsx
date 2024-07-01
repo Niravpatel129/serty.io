@@ -1,16 +1,19 @@
+import Link from 'next/link';
 import { MdOutlineMoreVert } from 'react-icons/md';
 
 export default function Home() {
   const renderTableRow = () => {
     return (
-      <div className='grid grid-cols-4 gap-4 items-center bg-[#f1f1f1] p-2 text-[#000] mt-2 hover:bg-[#e1e1e1] cursor-pointer transition-colors hover:outline hover:outline-[#000]'>
-        <div className='text-center'>Tooltip</div>
-        <div className='text-center'>Optimization</div>
-        <div className='text-center'>0/0</div>
-        <div className='flex justify-center items-center'>
-          <MdOutlineMoreVert className='text-2xl cursor-pointer' />
+      <Link href='/feature/1'>
+        <div className='grid grid-cols-4 gap-4 items-center bg-[#f1f1f1] p-2 text-[#000] mt-2 hover:bg-[#e1e1e1] cursor-pointer transition-colors hover:outline hover:outline-[#000]'>
+          <div className='text-center'>Tooltip</div>
+          <div className='text-center'>Optimization</div>
+          <div className='text-center'>0/0</div>
+          <div className='flex justify-center items-center'>
+            <MdOutlineMoreVert className='text-2xl cursor-pointer' />
+          </div>
         </div>
-      </div>
+      </Link>
     );
   };
 
