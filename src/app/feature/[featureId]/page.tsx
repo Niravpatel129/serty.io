@@ -4,7 +4,6 @@ export default function Page() {
     plan,
     name,
     dynamicNav,
-    planStatus,
     faq,
     faqStatus,
     disclaimer,
@@ -12,15 +11,16 @@ export default function Page() {
   ) => {
     return (
       <div className='grid grid-cols-9 gap-4 items-center bg-[#f1f1f1] p-2 text-[#000] mt-2 hover:bg-[#e1e1e1] cursor-pointer transition-colors'>
-        <div>{email}</div>
-        <div>{plan}</div>
-        <div>{name}</div>
-        <div className='text-blue-500'>{dynamicNav}</div>
-        <div className='text-green-500'>{planStatus}</div>
-        <div>{faq}</div>
-        <div className='text-green-500'>{faqStatus}</div>
-        <div>{disclaimer}</div>
-        <div className='text-green-500'>{disclaimerStatus}</div>
+        <div className='overflow-hidden text-ellipsis whitespace-nowrap'>{email}</div>
+        <div className='overflow-hidden text-ellipsis whitespace-nowrap'>{plan}</div>
+        <div className='overflow-hidden text-ellipsis whitespace-nowrap'>{name}</div>
+        <div className='text-blue-500 overflow-hidden text-ellipsis whitespace-nowrap'>
+          {dynamicNav}
+        </div>
+
+        <div className='overflow-hidden text-ellipsis whitespace-nowrap'>{faq}</div>
+
+        <div className='overflow-hidden text-ellipsis whitespace-nowrap'>{disclaimer}</div>
       </div>
     );
   };
@@ -35,113 +35,180 @@ export default function Page() {
         <div className='flex flex-col'>
           {/* Table Heading */}
           <div className='grid grid-cols-9 gap-4 items-center bg-[#000] p-2 text-[#f1f1f1] mt-2'>
-            <div>Email</div>
-            <div>Plan</div>
-            <div>Name</div>
-            <div>Plans</div>
+            <div className='overflow-hidden text-ellipsis whitespace-nowrap'>Email</div>
+            <div className='overflow-hidden text-ellipsis whitespace-nowrap'>Plan</div>
+            <div className='overflow-hidden text-ellipsis whitespace-nowrap'>Name</div>
+            <div className='overflow-hidden text-ellipsis whitespace-nowrap'>Plans</div>
             <div></div>
-            <div>FAQ</div>
+            <div className='overflow-hidden text-ellipsis whitespace-nowrap'>FAQ</div>
             <div></div>
-            <div>Disclaimer</div>
+            <div className='overflow-hidden text-ellipsis whitespace-nowrap'>Disclaimer</div>
             <div></div>
           </div>
 
           {/* Table Rows */}
           {renderRow(
-            'jclarke+v2Legacy@wave-test.net',
-            'NA',
-            'Fadia',
+            'john.doe@example.com',
+            'Basic',
+            'John',
             'Receipts Only',
-            'Success',
             'Has FAQ',
-            'Success',
+            'Complete',
+            'Standard Disclaimer',
+            'Accepted',
+          )}
+          {renderRow(
+            'jane.smith@example.com',
+            'Pro',
+            'Jane',
+            'Receipts + Pro',
+            'Has FAQ',
+            'Complete',
+            'Pro Disclaimer',
+            'Accepted',
+          )}
+          {renderRow(
+            'mike.johnson@example.com',
+            'Enterprise',
+            'Mike',
+            'Full Suite',
+            'Custom FAQ',
+            'Complete',
+            'Enterprise Disclaimer',
+            'Pending',
+          )}
+          {renderRow(
+            'sarah.williams@example.com',
+            'Basic',
+            'Sarah',
+            'Receipts Only',
+            'Inactive',
+            'No FAQ',
+            'Incomplete',
             'No Disclaimer',
-            'Success',
+            'Not Required',
           )}
           {renderRow(
-            '',
-            'NA',
-            'Fadia',
+            'david.brown@example.com',
+            'Pro',
+            'David',
             'Receipts + Pro',
-            'Success',
+            'Active',
             'Has FAQ',
-            'Success',
-            'CAD Disclaimer',
-            'Success',
+            'Complete',
+            'Pro Disclaimer',
+            'Accepted',
           )}
           {renderRow(
-            'jclarke+v2MigratedStarter@wave-test.net',
-            'NA (USD)',
-            'Fadia',
-            'Receipts + Pro',
-            'Success',
+            'emily.taylor@example.com',
+            'Enterprise',
+            'Emily',
+            'Full Suite',
+            'Active',
+            'Custom FAQ',
+            'In Progress',
+            'Enterprise Disclaimer',
+            'Accepted',
+          )}
+          {renderRow(
+            'chris.anderson@example.com',
+            'Basic',
+            'Chris',
+            'Receipts Only',
+            'Pending',
             'Has FAQ',
-            'Success',
-            'USD Disclaimer',
-            'Success',
+            'Complete',
+            'Standard Disclaimer',
+            'Pending',
           )}
           {renderRow(
-            '',
-            'NA',
-            'Fadia',
+            'alex.wilson@example.com',
+            'Pro',
+            'Alex',
             'Receipts + Pro',
-            'Success',
+            'Active',
             'Has FAQ',
-            'Success',
-            'CAD Disclaimer',
-            'Success',
+            'Complete',
+            'Pro Disclaimer',
+            'Accepted',
           )}
           {renderRow(
-            'jclarke+v2StarterPlus@wave-test.net',
-            'NA (USD)',
-            'Fadia',
-            'Receipts + Pro',
-            'Success',
-            'Has FAQ',
-            'Success',
-            'USD Disclaimer',
-            'Success',
+            'olivia.martin@example.com',
+            'Enterprise',
+            'Olivia',
+            'Full Suite',
+            'Active',
+            'Custom FAQ',
+            'Complete',
+            'Enterprise Disclaimer',
+            'Accepted',
           )}
           {renderRow(
-            '',
-            'NA',
-            'Jenn',
-            'Receipts + Pro',
-            'Success',
+            'ryan.thomas@example.com',
+            'Basic',
+            'Ryan',
+            'Receipts Only',
+            'Inactive',
             'No FAQ',
-            'Success',
-            'CAD Disclaimer',
-            'Success',
+            'Not Required',
+            'No Disclaimer',
+            'Not Required',
           )}
           {renderRow(
-            '',
-            'NA (USD)',
-            'Jenn',
+            'emma.white@example.com',
+            'Pro',
+            'Emma',
             'Receipts + Pro',
-            'Success',
-            'No FAQ',
-            'Success',
-            'USD Disclaimer',
-            'Success',
+            'Active',
+            'Has FAQ',
+            'Complete',
+            'Pro Disclaimer',
+            'Accepted',
           )}
-          {renderRow('', 'NA - Pro', 'Jenn', '', '', '', '', '', '')}
-          {renderRow('', 'NA - Pro (USD)', 'Jenn', '', '', '', '', '', '')}
-          {renderRow('', 'NA - Payments', 'Jenn', '', '', '', '', '', '')}
-          {renderRow('', 'NA - Payments (USD)', 'Jenn', '', '', '', '', '', '')}
-          {renderRow('', 'NA - Pro - Payments', 'Linda', '', '', '', '', '', '')}
           {renderRow(
-            'jclarke+v2Starter@wave-test.net',
-            'NA - Pro - Payments (USD)',
-            'Linda',
-            '',
-            '',
-            '',
-            '',
-            '',
-            '',
+            'daniel.lee@example.com',
+            'Enterprise',
+            'Daniel',
+            'Full Suite',
+            'Active',
+            'Custom FAQ',
+            'In Progress',
+            'Enterprise Disclaimer',
+            'Pending',
           )}
-          {renderRow('', 'CAD Biz', 'Fadia', '', '', '', '', '', '')}
-          {renderRow('Onboard New User/Business', 'USD Biz', 'Linda', '', '', '', '', '', '')}
+          {renderRow(
+            'sophia.clark@example.com',
+            'Basic',
+            'Sophia',
+            'Receipts Only',
+            'Active',
+            'Has FAQ',
+            'Complete',
+            'Standard Disclaimer',
+            'Accepted',
+          )}
+          {renderRow(
+            'ethan.harris@example.com',
+            'Pro',
+            'Ethan',
+            'Receipts + Pro',
+            'Active',
+            'Has FAQ',
+            'Complete',
+            'Pro Disclaimer',
+            'Accepted',
+          )}
+          {renderRow(
+            'ava.lewis@example.com',
+            'Enterprise',
+            'Ava',
+            'Full Suite',
+            'Pending',
+            'Custom FAQ',
+            'Not Started',
+            'Enterprise Disclaimer',
+            'Not Sent',
+          )}
         </div>
       </div>
     </main>
