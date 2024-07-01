@@ -145,12 +145,19 @@ export default function Page() {
 
     const combinations = generateCombinations(0, []);
 
-    const newTestCases = combinations.map((combination, index) => ({
-      name: `Test Case ${index + 1}`,
+    const newTestCases = combinations.map((combination) => ({
+      name: `Test Case ${testCases.length + 1}`,
       items: combination,
     }));
 
-    setTestCases((prev) => [...prev, ...newTestCases]);
+    // Filter out duplicates
+    const uniqueNewTestCases = newTestCases.filter((newCase) => {
+      return !testCases.some(
+        (existingCase) => JSON.stringify(existingCase.items) === JSON.stringify(newCase.items),
+      );
+    });
+
+    setTestCases((prev) => [...prev, ...uniqueNewTestCases]);
     setCurrentTestCases({});
   };
 
