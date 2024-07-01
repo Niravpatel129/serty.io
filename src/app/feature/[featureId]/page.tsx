@@ -45,8 +45,6 @@ export default function Page() {
             'Receipts Only',
             'Has FAQ',
             'Complete',
-            'Standard Disclaimer',
-            'Accepted',
           )}
         </div>
       </div>
