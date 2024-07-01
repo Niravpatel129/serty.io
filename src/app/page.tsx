@@ -1,3 +1,5 @@
+import { MdOutlineMoreVert } from 'react-icons/md';
+
 export default function Home() {
   const renderTableRow = () => {
     return (
@@ -5,7 +7,9 @@ export default function Home() {
         <div>Tooltip</div>
         <div>Optimization</div>
         <div>0/0</div>
-        <div>:</div>
+        <div className='cursor-pointer'>
+          <MdOutlineMoreVert className='text-2xl' />
+        </div>
       </div>
     );
   };
